@@ -5,6 +5,12 @@
  */
 package miniide.frontEnd;
 
+import java.awt.Color;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+
 /**
  *
  * @author angel
@@ -29,24 +35,31 @@ public class ventana extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         salidaTextPane = new javax.swing.JTextPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        entradaTextPane = new javax.swing.JTextPane();
         archivoButton = new javax.swing.JButton();
         proyectoButton = new javax.swing.JButton();
         salirButton = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        entradaTextArea = new javax.swing.JTextArea();
 
         jScrollPane1.setViewportView(salidaTextPane);
 
-        jScrollPane2.setViewportView(entradaTextPane);
-
         archivoButton.setText(">");
+        archivoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                archivoButtonActionPerformed(evt);
+            }
+        });
 
         proyectoButton.setText(">>");
 
         salirButton.setText("Cerrar ");
 
         jLabel2.setText("0");
+
+        entradaTextArea.setColumns(20);
+        entradaTextArea.setRows(5);
+        jScrollPane3.setViewportView(entradaTextArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -55,19 +68,19 @@ public class ventana extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 288, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(0, 202, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(proyectoButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(archivoButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(salirButton, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(archivoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(proyectoButton, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(salirButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -79,12 +92,12 @@ public class ventana extends javax.swing.JPanel {
                         .addComponent(archivoButton)
                         .addGap(18, 18, 18)
                         .addComponent(proyectoButton)
-                        .addGap(0, 313, Short.MAX_VALUE))
+                        .addGap(0, 363, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1)
-                            .addComponent(jScrollPane2))
+                            .addComponent(jScrollPane3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(salirButton)
@@ -93,14 +106,49 @@ public class ventana extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void archivoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archivoButtonActionPerformed
+        salidaTextPane.setText("");
+        painting(entradaTextArea.getText());
+    }//GEN-LAST:event_archivoButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton archivoButton;
-    private javax.swing.JTextPane entradaTextPane;
+    private javax.swing.JTextArea entradaTextArea;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton proyectoButton;
     private javax.swing.JTextPane salidaTextPane;
     private javax.swing.JButton salirButton;
     // End of variables declaration//GEN-END:variables
+
+    public void append(Color c, String s) { // better implementation--uses
+        // StyleContext
+        StyleContext sc = StyleContext.getDefaultStyleContext();
+        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
+
+        int len = salidaTextPane.getText().length();
+        salidaTextPane.setCaretPosition(len); // place caret at the end (with no selection)
+        salidaTextPane.setCharacterAttributes(aset, false);
+        salidaTextPane.replaceSelection(s); // there is no selection, so inserts at caret
+    }
+
+    private void painting(String textIn) {
+        for (int i = 0; i < textIn.length(); i++) {
+            switch (textIn.charAt(i)) {
+                case 'a':
+                    append(Color.red, String.valueOf(textIn.charAt(i)));
+                    break;
+                case 'b':
+                    append(Color.BLUE, String.valueOf(textIn.charAt(i)));
+                    break;
+                case 'c':
+                    append(Color.green, String.valueOf(textIn.charAt(i)));
+                    break;
+                default:
+                    append(Color.BLACK, String.valueOf(textIn.charAt(i)));
+                    break;
+            }
+        }
+    }
 }
