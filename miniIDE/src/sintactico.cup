@@ -1,0 +1,316 @@
+package miniide;
+
+import java_cup.runtime.*;
+import javax.swing.JTextPane;
+import miniide.frontEnd.structure.Structure;
+
+parser code {:
+
+	private JTextPane panel;
+	private Structure painting;
+
+	public parser(Lexer lex, Structure paintText, JTextPane panelSalida) {
+		super(lex);
+		this.panel = panelSalida;
+		this.painting = paintText;
+	}
+
+	public void syntax_error(Symbol cur_token) {
+		String message = "Estructura invalida en posición " + cur_token.right
+			 + ", token: " + cur_token.value;
+		System.out.println(message);
+	}
+
+:}
+
+/* Terminals */
+terminal String Entero;
+terminal String Decimal;
+terminal String NamEntero, NamDecimal, NamCadena, NamBoolean, Vacio, Devolver, Boolean;
+terminal String Publico, Protegido, Privado, Nuevo, Importar, Clase, Extiende;
+terminal String Mas, Menos, Por, Div, Add1, Less1, Mayor, Menor, MayorIg, MenorIg, Igual, Diferente, Or, And, Not;
+terminal String Asignacion, EndCom, CorAbierto, CorCerrado, ParAbierto, ParCerrado, Coma;
+terminal String Si_SC, Si_NoSi_SC, SiNo_SC, Mientras_SC, Hacer_SC, Desde_SC, Hasta_SC, Incremento_SC;
+terminal String Imprimir, Cadena, Identificador;
+
+/*Non terminal */
+non terminal String COR_ABIERTO, COR_CERRADO, INICIO, INICIO1, VISIBILIDAD, DATO_PRIMITIVO, NUMBERS, NAME_PRIMITIVO, ARIT_UNARIO, ARIT_RELACIONAL, VACIO_ID; 
+non terminal String STR_IMPORT, CLASE, CLASE1, CLASE2, CUERPO_PRO;
+non terminal String ATRI_CLASE, ATRI_CLASE1, DECLARACION, DECLARACION1, INICIALIZAR, INICIALIZAR1, INSTANCIAR, INSTANCIAR1;
+non terminal String  METODO, METODO_E, METODO_D, METODO_B, METODO_C, METODO_INICIO_C, METODO_INICIO_V, METODO_FIN;
+non terminal String CONCAT_CADENA, DATO_PRI_ID, CONSTRUCTOR, CONSTRUCTOR1, PARAMETROS, UN_PARAMETRO;
+non terminal String IF_ELSE_IF, IF_ELSE_IF1, IF_ELSE_IF_BODY, WHILE_DO, FOR_OP;
+non terminal String PRINT_TEXT, CUERPO_METODO, ASIGNAR_VAL_VAR, ASIGNAR_VAL_VAR1, ASIGNAR_VAL_VAR2;
+non terminal String OP_ARIT_DE, OP_ARIT_2, OP_ARIT_3, OP_ARIT_4, OP_ARIT_6, OP_ARIT_5;
+non terminal String OP_UNARIA, OP_LOGIC, OP_LOGIC1, OP_LOGIC2, OP_LOGIC3, OP_LOGIC4, ASIGNAR, ASIGNAR1;
+non terminal String CLASE_ID, IDENTIFICADOR, EXTIENDE, IMPORTAR_ID, PAR_ABIERTO_ID, PAR_CERRADO_ID, END_COM_ID, CADENA_ID, NAME_ENTERO_ID, NAME_DECIMAL_ID, NAME_BOOLEAN_ID, NAME_CADENA_ID, COMA_ID, ASIGNACION_ID, NUEVO_ID, ENTERO_ID, BOOLEAN_ID, DEVOLVER_ID, IMPRIMIR_ID, SI_ID, SI_NOSI_ID, SINO_ID, MIENTRAS_ID, HACER_ID, DESDE_ID, HASTA_ID, INCREMENTO_ID, MAS_ID, MENOS_ID, POR_ID, DIV_ID, AND_ID, OR_ID, NOT_ID;
+
+precedence left Devolver, Identificador, EndCom;
+precedence left Mas, ParCerrado;
+
+
+start with INICIO;
+
+INICIO 			::=	INICIO1 CLASE INICIO1
+					| CLASE INICIO1
+					| INICIO1 CLASE
+					| CLASE
+					;
+
+INICIO1			::= STR_IMPORT INICIO1
+					| STR_IMPORT
+					;
+
+VISIBILIDAD		::=	Publico:e  		{: painting.appendCPurple(e,panel); :} /*{: RESULT = e; :}*/ 
+					| Protegido:e  	{: painting.appendCPurple(e,panel); :}
+					| Privado:e 	{: painting.appendCPurple(e,panel); :}
+					;
+
+DATO_PRIMITIVO 	::=	Cadena:e 		{: painting.appendCBrown(e, panel); :}
+					| OP_LOGIC
+					;
+
+NUMBERS			::=	Entero:e 		{: painting.appendCOrange(e,panel); :}
+					| Decimal:e 	{: painting.appendCRed(e,panel); :}
+					;
+
+NAME_PRIMITIVO	::=	NAME_ENTERO_ID
+					| NAME_DECIMAL_ID
+					| NAME_CADENA_ID
+					| NAME_BOOLEAN_ID
+					;
+
+ARIT_UNARIO		::=	Add1:e 			{: painting.appendDarkBlue(e,panel); :}
+					| Less1:e 		{: painting.appendDarkBlue(e,panel); :}
+					;
+
+ARIT_RELACIONAL	::=	Mayor:e 		{: painting.appendDarkBlue(e,panel); :}
+					| Menor:e 		{: painting.appendDarkBlue(e,panel); :}
+					| MayorIg:e 	{: painting.appendDarkBlue(e,panel); :}
+					| MenorIg:e 	{: painting.appendDarkBlue(e,panel); :}
+					| Igual:e 		{: painting.appendDarkBlue(e,panel); :}
+					| Diferente:e 	{: painting.appendDarkBlue(e,panel); :}
+					;
+
+COR_ABIERTO		::= CorAbierto:e 		{: painting.appendCorAbierto(e,panel); :};
+COR_CERRADO		::= CorCerrado:e 		{: painting.appendCorCerrado(e,panel,false); :};
+
+CLASE_ID		::= Clase:e 			{:painting.appendCPurple(e,panel);:};
+
+IDENTIFICADOR 	::= Identificador:e 	{: painting.appendCBlack(e,panel); :};
+
+EXTIENDE 		::= Extiende:e 			{:painting.appendCPurple(e, panel); :};
+
+IMPORTAR_ID		::= Importar:e 			{:painting.appendCPurple(e, panel); :};
+
+PAR_ABIERTO_ID	::= ParAbierto:e 		{: painting.appendCBlack(e,panel); :};
+PAR_CERRADO_ID	::= ParCerrado:e 		{: painting.appendCBlack(e,panel); :};
+END_COM_ID		::= EndCom:e 			{: painting.appendEndCom(e,panel); :};
+
+CADENA_ID		::= Cadena:e 			{: painting.appendCBrown(e, panel); :};
+NAME_ENTERO_ID	::= NamEntero:e 		{: painting.appendCBlue(e,panel); :};
+NAME_DECIMAL_ID	::= NamDecimal:e 	 	{: painting.appendCBlue(e,panel); :};
+NAME_BOOLEAN_ID	::= NamBoolean:e 		{: painting.appendCBlue(e,panel); :};
+NAME_CADENA_ID	::= NamCadena:e 		{: painting.appendCBlue(e,panel); :};
+
+COMA_ID			::= Coma:e 				{: painting.appendCBlack(e,panel); :};
+ASIGNACION_ID	::= Asignacion:e 	 	{: painting.appendDarkBlue(e,panel); :};
+
+NUEVO_ID		::= Nuevo:e 			{: painting.appendCPurple(e, panel); :};
+
+ENTERO_ID 		::= Entero:e 			{: painting.appendCOrange(e,panel); :};
+BOOLEAN_ID 		::= Boolean:e 			{: painting.appendCYellow(e,panel); :};
+VACIO_ID		::= Vacio:e 			{: painting.appendCBlue(e,panel); :};
+
+DEVOLVER_ID		::= Devolver:e 			{: painting.appendCBlue(e,panel); :};
+IMPRIMIR_ID 	::= Imprimir:e 			{: painting.appendCPurple(e,panel); :};
+
+SI_ID			::= Si_SC:e 			{: painting.appendCBlue(e,panel); :};
+SI_NOSI_ID		::= Si_NoSi_SC:e		{: painting.appendCBlue(e,panel); :};
+SINO_ID			::= SiNo_SC:e 			{: painting.appendCBlue(e,panel); :};
+MIENTRAS_ID		::= Mientras_SC:e		{: painting.appendCBlue(e,panel); :};
+HACER_ID		::= Hacer_SC:e 			{: painting.appendCBlue(e,panel); :};
+DESDE_ID		::= Desde_SC:e 			{: painting.appendCBlue(e,panel); :};
+HASTA_ID		::= Hasta_SC:e 			{: painting.appendCBlue(e,panel); :};
+INCREMENTO_ID	::= Incremento_SC:e		{: painting.appendCBlue(e,panel); :};
+
+MAS_ID			::= Mas:e 		 	{: painting.appendDarkBlue(e,panel); :};
+MENOS_ID		::= Menos:e 	 	{: painting.appendDarkBlue(e,panel); :};
+POR_ID			::= Por:e 	 		{: painting.appendDarkBlue(e,panel); :};
+DIV_ID			::= Div:e 	 		{: painting.appendDarkBlue(e,panel); :};
+
+AND_ID			::= And:e 	 	{: painting.appendDarkBlue(e,panel); :};
+OR_ID			::= Or:e 	 	{: painting.appendDarkBlue(e,panel); :};
+NOT_ID			::= Not:e 	 	{: painting.appendDarkBlue(e,panel); :};
+
+STR_IMPORT		::=	IMPORTAR_ID PAR_ABIERTO_ID CADENA_ID PAR_CERRADO_ID END_COM_ID
+					| error:e {: System.out.println("Error al declarar la importacion"); :} ;
+
+CLASE 			::= VISIBILIDAD CLASE_ID IDENTIFICADOR CLASE1;
+	CLASE1 			::=  CLASE2
+						| EXTIENDE IDENTIFICADOR CLASE2 
+						;
+	CLASE2			::=	  COR_ABIERTO CUERPO_PRO COR_CERRADO 
+						| COR_ABIERTO COR_CERRADO 
+						;
+
+CUERPO_PRO		::=	ATRI_CLASE CUERPO_PRO
+					| DECLARACION CUERPO_PRO
+					| METODO CUERPO_PRO
+					| CONSTRUCTOR CUERPO_PRO
+					| ASIGNAR_VAL_VAR CUERPO_PRO
+					| ASIGNAR CUERPO_PRO
+					| ATRI_CLASE
+					| DECLARACION
+					| METODO
+					| CONSTRUCTOR
+					| ASIGNAR_VAL_VAR
+					| ASIGNAR
+					| error:e {: System.out.println("Error en el cuerpo de la clase"); :}
+					;
+
+ATRI_CLASE		::=	VISIBILIDAD ATRI_CLASE1;
+	ATRI_CLASE1		::= DECLARACION 
+						| INICIALIZAR 	
+						| INSTANCIAR
+						;
+
+DECLARACION		::=	NAME_PRIMITIVO DECLARACION1;
+	DECLARACION1	::=	IDENTIFICADOR COMA_ID DECLARACION1
+						| IDENTIFICADOR END_COM_ID
+						;
+
+INICIALIZAR		::=	NAME_PRIMITIVO IDENTIFICADOR ASIGNACION_ID DATO_PRIMITIVO END_COM_ID;
+
+INSTANCIAR		::=	IDENTIFICADOR IDENTIFICADOR ASIGNACION_ID NUEVO_ID IDENTIFICADOR PAR_ABIERTO_ID INSTANCIAR1;
+	INSTANCIAR1	::=	PAR_CERRADO_ID END_COM_ID
+					| PARAMETROS PAR_CERRADO_ID END_COM_ID 
+					;
+
+METODO			::=	VISIBILIDAD NAME_PRIMITIVO IDENTIFICADOR PAR_ABIERTO_ID PARAMETROS PAR_CERRADO_ID COR_ABIERTO METODO_E
+					| VISIBILIDAD NAME_PRIMITIVO IDENTIFICADOR PAR_ABIERTO_ID PAR_CERRADO_ID COR_ABIERTO METODO_E
+					| VISIBILIDAD VACIO_ID IDENTIFICADOR PAR_ABIERTO_ID PARAMETROS PAR_CERRADO_ID COR_ABIERTO METODO_D
+					| VISIBILIDAD VACIO_ID IDENTIFICADOR PAR_ABIERTO_ID PAR_CERRADO_ID COR_ABIERTO METODO_D
+					;
+
+METODO_E		::=	METODO_INICIO_C DATO_PRIMITIVO METODO_FIN;
+
+METODO_D		::= CUERPO_METODO COR_CERRADO
+					| COR_CERRADO;
+
+	METODO_INICIO_C	::=	CUERPO_METODO DEVOLVER_ID
+						| DEVOLVER_ID;
+	METODO_FIN		::=	END_COM_ID COR_CERRADO; 
+
+CONCAT_CADENA	::=	DATO_PRI_ID MAS_ID CONCAT_CADENA
+					| DATO_PRI_ID
+					;
+
+	DATO_PRI_ID		::=	DATO_PRIMITIVO
+						;
+
+CONSTRUCTOR		::=	IDENTIFICADOR PAR_ABIERTO_ID CONSTRUCTOR1;
+	CONSTRUCTOR1	::=	PAR_CERRADO_ID COR_ABIERTO CUERPO_METODO COR_CERRADO
+						| PAR_CERRADO_ID COR_ABIERTO COR_CERRADO
+						| PARAMETROS PAR_CERRADO_ID COR_ABIERTO CUERPO_METODO COR_CERRADO
+						| PARAMETROS PAR_CERRADO_ID COR_ABIERTO COR_CERRADO
+						;
+
+PARAMETROS		::=  UN_PARAMETRO COMA_ID PARAMETROS
+					| UN_PARAMETRO
+					;
+	UN_PARAMETRO	::= NAME_PRIMITIVO IDENTIFICADOR;
+
+IF_ELSE_IF		::=	SI_ID IF_ELSE_IF_BODY COR_CERRADO IF_ELSE_IF1
+					| SI_ID IF_ELSE_IF_BODY COR_CERRADO
+					;
+	IF_ELSE_IF1		::=	SI_NOSI_ID IF_ELSE_IF_BODY COR_CERRADO IF_ELSE_IF1
+						| SI_NOSI_ID IF_ELSE_IF_BODY COR_CERRADO
+						| SINO_ID COR_ABIERTO CUERPO_METODO COR_CERRADO
+						;
+	IF_ELSE_IF_BODY	::=	PAR_ABIERTO_ID OP_LOGIC PAR_CERRADO_ID COR_ABIERTO CUERPO_METODO
+						| PAR_ABIERTO_ID OP_LOGIC PAR_CERRADO_ID COR_ABIERTO
+						;
+
+WHILE_DO		::=	MIENTRAS_ID PAR_ABIERTO_ID OP_LOGIC PAR_CERRADO_ID COR_ABIERTO CUERPO_METODO COR_CERRADO
+					| MIENTRAS_ID PAR_ABIERTO_ID OP_LOGIC PAR_CERRADO_ID COR_ABIERTO COR_CERRADO
+					| HACER_ID COR_ABIERTO CUERPO_METODO COR_CERRADO MIENTRAS_ID PAR_ABIERTO_ID OP_LOGIC PAR_CERRADO_ID END_COM_ID
+					| HACER_ID COR_ABIERTO COR_CERRADO MIENTRAS_ID PAR_ABIERTO_ID OP_LOGIC PAR_CERRADO_ID END_COM_ID
+					;
+
+FOR_OP			::=	DESDE_ID IDENTIFICADOR ASIGNACION_ID ENTERO_ID HASTA_ID IDENTIFICADOR ARIT_RELACIONAL ENTERO_ID INCREMENTO_ID ENTERO_ID COR_ABIERTO CUERPO_METODO COR_CERRADO
+					| DESDE_ID IDENTIFICADOR ASIGNACION_ID ENTERO_ID HASTA_ID IDENTIFICADOR ARIT_RELACIONAL ENTERO_ID INCREMENTO_ID ENTERO_ID COR_ABIERTO COR_CERRADO;  
+
+PRINT_TEXT		::=	IMPRIMIR_ID PAR_ABIERTO_ID CONCAT_CADENA PAR_CERRADO_ID END_COM_ID;
+
+CUERPO_METODO 	::=	INICIALIZAR CUERPO_METODO
+					| IF_ELSE_IF CUERPO_METODO
+					| WHILE_DO CUERPO_METODO
+					| FOR_OP CUERPO_METODO
+					| PRINT_TEXT CUERPO_METODO
+					| ASIGNAR_VAL_VAR CUERPO_METODO
+					| ASIGNAR CUERPO_METODO
+					| OP_UNARIA CUERPO_METODO
+					| INICIALIZAR
+					| IF_ELSE_IF
+					| WHILE_DO
+					| FOR_OP
+					| PRINT_TEXT
+					| ASIGNAR_VAL_VAR
+					| ASIGNAR
+					| OP_UNARIA
+					;
+
+ASIGNAR_VAL_VAR	::=	IDENTIFICADOR ASIGNACION_ID ASIGNAR_VAL_VAR1
+					| NAME_DECIMAL_ID ASIGNAR_VAL_VAR2 OP_ARIT_DE END_COM_ID
+					| NAME_ENTERO_ID ASIGNAR_VAL_VAR2 OP_ARIT_DE END_COM_ID
+					;
+	ASIGNAR_VAL_VAR1	::=	OP_ARIT_DE END_COM_ID;
+	ASIGNAR_VAL_VAR2 ::=  IDENTIFICADOR ASIGNACION_ID;
+
+OP_ARIT_DE		::=	OP_ARIT_DE MAS_ID OP_ARIT_2
+					| OP_ARIT_2
+					;
+	OP_ARIT_2		::=	OP_ARIT_2 MENOS_ID OP_ARIT_3
+						| OP_ARIT_3
+						;
+	OP_ARIT_3		::=	OP_ARIT_3 POR_ID OP_ARIT_4
+						| OP_ARIT_4
+						;
+	OP_ARIT_4		::=	OP_ARIT_4 DIV_ID OP_ARIT_6
+						| OP_ARIT_6
+						;
+	OP_ARIT_6		::=	OP_ARIT_5 ARIT_UNARIO
+						| OP_ARIT_5
+						;
+	OP_ARIT_5		::=	PAR_ABIERTO_ID OP_ARIT_DE PAR_CERRADO_ID
+						| NUMBERS
+						| IDENTIFICADOR
+						;
+
+OP_UNARIA		::=	IDENTIFICADOR ARIT_UNARIO END_COM_ID;
+
+OP_LOGIC		::=	OP_LOGIC ARIT_RELACIONAL OP_LOGIC1
+					| OP_LOGIC1
+					;
+	OP_LOGIC1		::=	OP_LOGIC1 AND_ID OP_LOGIC2
+						| OP_LOGIC2
+						;
+	OP_LOGIC2		::=	OP_LOGIC2 OR_ID OP_LOGIC3
+						| OP_LOGIC3
+						;
+	OP_LOGIC3		::=	NOT_ID OP_LOGIC4
+						| OP_LOGIC4
+						;
+	OP_LOGIC4		::=	PAR_ABIERTO_ID OP_LOGIC PAR_CERRADO_ID
+						| BOOLEAN_ID
+						| OP_ARIT_DE
+						;
+
+ASIGNAR			::=	NAME_PRIMITIVO IDENTIFICADOR ASIGNACION_ID ASIGNAR1
+					| IDENTIFICADOR ASIGNACION_ID ASIGNAR1
+					;
+	ASIGNAR1		::=	OP_LOGIC END_COM_ID
+						| CONCAT_CADENA END_COM_ID
+						| BOOLEAN_ID END_COM_ID
+						;

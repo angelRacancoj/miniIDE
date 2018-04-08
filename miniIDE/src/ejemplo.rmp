@@ -1,0 +1,31 @@
+$* este es un comentario
+q puede esta en varias lineas
+assldkfalskf *$
+
+importar ("hola");
+
+publico clase hola extiende holi [
+	VAR := "12";
+	cadena mycadena := "hola";
+
+entero id := 12;
+
+publico id id := nuevo id();
+
+publico cadena id (entero id) [
+	SI (2 <= id)[
+] SI_NOSI ( !!id )[
+
+] SI_NOSI ( (2+(8*id)) == (id/7) ) [ imprimir("con cantidades");]
+SINO [
+ imprimir("hola mundo como les va");
+]
+devolver "cadema";
+]
+	
+// comentario d una linea
+
+id (entero id, cadena string)[]
+
+id ()[]
+]

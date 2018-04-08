@@ -1,0 +1,96 @@
+package miniide.frontEnd;
+
+import java_cup.runtime.*;
+import javax.swing.JTree;
+import miniide.treeManager.treeController;
+import javax.swing.tree.DefaultMutableTreeNode;
+import miniide.exceptions.NodeNotFoundException;
+import miniide.exceptions.NotFolderException;
+
+parser code {:
+
+	private static final String SEPARATOR = "/";
+	 String path = "";
+    String nameProyect = "";
+    boolean isDirectory;
+	JTree tree;
+	treeController control;
+
+	public parser(LexerArch lex, JTree tree, treeController treeControl) {
+		super(lex);
+		this.tree = tree;
+		this.control = treeControl;
+	}
+
+	public void syntax_error(Symbol cur_token) {
+		String message = "Estructura invalida en posición " + cur_token.right
+			 + ", token: " + cur_token.value;
+		System.out.println(message);
+	}
+
+	public void execute(String pathIn, boolean Dir) {
+		path = nameProyect + pathIn;
+
+        DefaultMutableTreeNode baseNode = control.getBaseNodeOfPath(path);
+        if (Dir) {
+            try {
+                control.createDirectory(baseNode, path.split(SEPARATOR));
+            } catch (NodeNotFoundException | NotFolderException e) {
+                System.out.println("\nError al agregar la carpeta " + e + "\n");
+            }
+        } else {
+            try {
+                control.createFile(baseNode, path.split(SEPARATOR));
+            } catch (NodeNotFoundException | NotFolderException e) {
+                System.out.println("\nError al agregar el archivo " + e + "\n");
+            }
+        }
+    }
+
+    public void setNameProyect(String nameProyect) {
+        this.nameProyect = "/" + nameProyect;
+    }
+:}
+
+terminal String proyectoOp, proyectoCl, nombreOp, nombreCl, creacionOp, creacionCl, rutaOp, rutaCl;
+terminal String archivoOp, archivoCl, paqueteOp, paqueteCl, lsArchOp, lsArchCl, CreateDate, nameArch, fileRote;
+
+non terminal String PROYECTO, CUERPO_PROYECT, NOMBRE_FILE, NAME_DIR, FECHA_CREATE, RUTA_FILE; 
+non terminal String ARCHIVO_FILE, PAQUETE, LIST_PAQUETES, ARCHIVOS_LS, LIST_FILES;
+
+start with PROYECTO;
+
+PROYECTO 		::= proyectoOp CUERPO_PROYECT proyectoCl 						{: System.out.println("Proyecto abierto exitosamente"); :};
+
+CUERPO_PROYECT	::= NAME_DIR FECHA_CREATE ARCHIVOS_LS LIST_PAQUETES
+					| NAME_DIR FECHA_CREATE ARCHIVOS_LS
+					| NAME_DIR FECHA_CREATE LIST_PAQUETES
+					| NAME_DIR FECHA_CREATE
+					; 
+
+NAME_DIR		::= nombreOp nameArch:e nombreCl 								{: execute(control.path(e),true); :};
+
+NOMBRE_FILE		::= nombreOp nameArch:e nombreCl 								{: RESULT = e; System.out.println("El nombre del archivo es: " + e); :};
+
+FECHA_CREATE	::= creacionOp CreateDate:e creacionCl		 					{: System.out.println("la fecha es: " + e); :};
+
+RUTA_FILE		::= rutaOp fileRote:e rutaCl 									{: RESULT = e; System.out.println( "La ruta es: " + e); :};
+
+ARCHIVO_FILE	::= archivoOp  NOMBRE_FILE RUTA_FILE:e archivoCl				{: execute(e.replaceAll("\"",""),false); System.out.println("Archivo leido correctamente"); :};
+
+PAQUETE 		::= paqueteOp NAME_DIR ARCHIVOS_LS paqueteCl	
+					| paqueteOp NAME_DIR ARCHIVOS_LS LIST_PAQUETES paqueteCl
+					| paqueteOp NAME_DIR LIST_PAQUETES ARCHIVOS_LS paqueteCl
+					| paqueteOp NAME_DIR LIST_PAQUETES paqueteCl
+					| paqueteOp NAME_DIR paqueteCl 								{: System.out.println("paquetes indicados correctamente"); :}
+					;	
+
+LIST_PAQUETES	::= PAQUETE LIST_PAQUETES
+					| PAQUETE
+					;
+
+ARCHIVOS_LS		::= lsArchOp LIST_FILES lsArchCl;
+
+LIST_FILES		::= ARCHIVO_FILE LIST_FILES
+					| ARCHIVO_FILE
+					;

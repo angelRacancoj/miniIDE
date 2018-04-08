@@ -6,10 +6,16 @@
 package miniide.frontEnd;
 
 import java.awt.Color;
+import java.io.StringReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
+import miniide.Lexer;
+import miniide.frontEnd.structure.Structure;
+import miniide.parser;
 
 /**
  *
@@ -17,11 +23,24 @@ import javax.swing.text.StyleContext;
  */
 public class ventana extends javax.swing.JPanel {
 
+    Lexer myLexer;
+    parser parser;
+    Structure paintText;
+    TextLineNumber lineNumber;
+    TextLineNumber lineNumber2;
+
     /**
      * Creates new form ventana
      */
     public ventana() {
         initComponents();
+        this.paintText = new Structure();
+        this.myLexer = new Lexer(new StringReader(""), salidaTextPane, paintText);
+        this.parser = new parser(myLexer, paintText, salidaTextPane);
+        TextLineNumber lineNumber = new TextLineNumber(salidaTextPane);
+        TextLineNumber lineNumber2 = new TextLineNumber(entradaTextArea);
+        jScrollPane1.setRowHeaderView(lineNumber);
+        jScrollPane3.setRowHeaderView(lineNumber2);
     }
 
     /**
@@ -108,7 +127,14 @@ public class ventana extends javax.swing.JPanel {
 
     private void archivoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_archivoButtonActionPerformed
         salidaTextPane.setText("");
-        painting(entradaTextArea.getText());
+        myLexer.yyreset(new StringReader(entradaTextArea.getText()));
+        try {
+            this.parser.parse();
+        } catch (Exception e) {
+            Logger.getLogger(ventana.class.getName()).log(Level.SEVERE, null, e);
+        }
+
+        System.out.println("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
     }//GEN-LAST:event_archivoButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,0 +1,47 @@
+Analizador Lexico {
+	proyectoOp		-> "<proyecto>"
+	proyectoCl		-> "</proyecto>"
+	nombreOp		-> "<nombre>"
+	nombreCl		-> "</nombre>"
+	nombreArch		-> [:digitletter:][(digitletter) | [-] | [_]]*
+	month			-> "enero" | "febrero" | "marzo" | "abril" | "mayo" | "junio" | "julio" | "agosto" | "septiembre" | "octubre" | "noviembre" | "diciembre"
+	dateCreate		-> [:digit:]+[-] {month} [-][:digit:]+
+	creacionOp		-> "<creacion>"
+	creacionCl		-> "</creacion>"
+	rutaTxt			-> "\"" [^*] ~"\""
+	rutaOp			-> "<ruta>"
+	rutaCl			-> "</ruta>"
+	archivoOp		-> "<archivo>"
+	archivoCl		-> "</archivo>"
+	paqueteOp		-> "<paquete>"
+	paqueteCl		-> "</paquete>"
+	lsArchOp		-> "<archs>"
+	lsArchCl		-> "</archs>"
+}
+
+Analizador Sintactico{
+	PROYECTO 		-> proyectoOp CUERPO_PROYECT proyectoCl;
+	CUERPO_PROYECT	-> NOMBRE FECHA_CREATE ARCHIVOS_LS LIST_PAQUETES
+						| NOMBRE FECHA_CREATE ARCHIVOS_LS
+						| NOMBRE FECHA_CREATE LIST_PAQUETES
+						| NOMBRE FECHA_CREATE
+						; 
+	NOMBRE_FILE		-> nombreOp nombreArch nombreCl;
+	FECHA_CREATE	-> creacionOp dateCreate creacionCl;
+	RUTA_FILE		-> rutaOp rutaTxt rutaCl;
+	ARCHIVO_FILE	-> archivoOp  NOMBRE_FILE RUTA_FILE archivoCl;		
+	PAQUETE 		-> paqueteOp NOMBRE_FILE ARCHIVOS_LS paqueteCl
+						| paqueteOp NOMBRE_FILE ARCHIVOS_LS LIST_PAQUETES paqueteCl
+						| paqueteOp NOMBRE_FILE LIST_PAQUETES ARCHIVOS_LS paqueteCl
+						| paqueteOp NOMBRE_FILE LIST_PAQUETES paqueteCl
+						| paqueteOp NOMBRE_FILE paqueteCl
+						;
+	LIST_PAQUETES	-> PAQUETE LIST_PAQUETES
+						| PAQUETE
+						;
+	ARCHIVOS_LS		-> lsArchOp LIST_FILES lsArchCl; 
+	LIST_FILES		-> ARCHIVO_FILE LIST_FILES
+						| ARCHIVO_FILE
+						;
+
+} 
