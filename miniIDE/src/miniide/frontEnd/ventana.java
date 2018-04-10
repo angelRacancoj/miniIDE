@@ -5,10 +5,15 @@
  */
 package miniide.frontEnd;
 
+import Archivo.ManejadorArchivo;
 import java.awt.Color;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTextArea;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -28,12 +33,16 @@ public class ventana extends javax.swing.JPanel {
     Structure paintText;
     TextLineNumber lineNumber;
     TextLineNumber lineNumber2;
+    String pathIn;
+    ManejadorArchivo fileManager;
 
     /**
      * Creates new form ventana
      */
-    public ventana() {
+    public ventana(String path) throws IOException {
+
         initComponents();
+        this.pathIn = path;
         this.paintText = new Structure();
         this.myLexer = new Lexer(new StringReader(""), salidaTextPane, paintText);
         this.parser = new parser(myLexer, paintText, salidaTextPane);
@@ -41,6 +50,36 @@ public class ventana extends javax.swing.JPanel {
         TextLineNumber lineNumber2 = new TextLineNumber(entradaTextArea);
         jScrollPane1.setRowHeaderView(lineNumber);
         jScrollPane3.setRowHeaderView(lineNumber2);
+
+        entradaTextArea.addCaretListener(new CaretListener() {
+
+            public void caretUpdate(CaretEvent e) {
+
+                JTextArea editArea = (JTextArea) e.getSource();
+
+                int linenum = 1;
+                int columnnum = 1;
+
+                try {
+
+                    int caretpos = editArea.getCaretPosition();
+                    linenum = editArea.getLineOfOffset(caretpos);
+
+                    columnnum = caretpos - editArea.getLineStartOffset(linenum);
+
+                    linenum += 1;
+
+                } catch (Exception ex) {
+                }
+
+                updateStatus(linenum, columnnum);
+            }
+        });
+
+    }
+
+    private void updateStatus(int linenumber, int columnnumber) {
+        lineColLabel.setText("Line: " + linenumber + " Column: " + columnnumber);
     }
 
     /**
@@ -57,7 +96,7 @@ public class ventana extends javax.swing.JPanel {
         archivoButton = new javax.swing.JButton();
         proyectoButton = new javax.swing.JButton();
         salirButton = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        lineColLabel = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         entradaTextArea = new javax.swing.JTextArea();
 
@@ -74,7 +113,7 @@ public class ventana extends javax.swing.JPanel {
 
         salirButton.setText("Cerrar ");
 
-        jLabel2.setText("0");
+        lineColLabel.setText("0");
 
         entradaTextArea.setColumns(20);
         entradaTextArea.setRows(5);
@@ -88,7 +127,7 @@ public class ventana extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lineColLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 202, Short.MAX_VALUE))
                     .addComponent(jScrollPane3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -120,7 +159,7 @@ public class ventana extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(salirButton)
-                            .addComponent(jLabel2))))
+                            .addComponent(lineColLabel))))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -140,41 +179,15 @@ public class ventana extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton archivoButton;
     private javax.swing.JTextArea entradaTextArea;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lineColLabel;
     private javax.swing.JButton proyectoButton;
     private javax.swing.JTextPane salidaTextPane;
     private javax.swing.JButton salirButton;
     // End of variables declaration//GEN-END:variables
 
-    public void append(Color c, String s) { // better implementation--uses
-        // StyleContext
-        StyleContext sc = StyleContext.getDefaultStyleContext();
-        AttributeSet aset = sc.addAttribute(SimpleAttributeSet.EMPTY, StyleConstants.Foreground, c);
-
-        int len = salidaTextPane.getText().length();
-        salidaTextPane.setCaretPosition(len); // place caret at the end (with no selection)
-        salidaTextPane.setCharacterAttributes(aset, false);
-        salidaTextPane.replaceSelection(s); // there is no selection, so inserts at caret
-    }
-
-    private void painting(String textIn) {
-        for (int i = 0; i < textIn.length(); i++) {
-            switch (textIn.charAt(i)) {
-                case 'a':
-                    append(Color.red, String.valueOf(textIn.charAt(i)));
-                    break;
-                case 'b':
-                    append(Color.BLUE, String.valueOf(textIn.charAt(i)));
-                    break;
-                case 'c':
-                    append(Color.green, String.valueOf(textIn.charAt(i)));
-                    break;
-                default:
-                    append(Color.BLACK, String.valueOf(textIn.charAt(i)));
-                    break;
-            }
-        }
+    public void setText(String textIn) {
+        entradaTextArea.setText(textIn);
     }
 }

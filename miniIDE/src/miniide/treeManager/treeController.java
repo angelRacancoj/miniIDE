@@ -82,8 +82,7 @@ public class treeController {
                 return child;
             }
         }
-        throw new NodeNotFoundException("No se encuentra el item: >>" + name + "<< en >>"
-                + baseFile.getName());
+        throw new NodeNotFoundException("No se encuentra el item: >>" + name + "<< en >> " + baseFile.getName());
     }
 
     public DefaultMutableTreeNode createDirectory(DefaultMutableTreeNode baseNode, String[] paths) throws NodeNotFoundException, NotFolderException {
@@ -168,6 +167,9 @@ public class treeController {
         for (int i = 0; i < Directory.size(); i++) {
             tempPath += ("/" + Directory.get(i));
         }
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("El path contruido es: " + tempPath);
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         return tempPath;
     }
 }

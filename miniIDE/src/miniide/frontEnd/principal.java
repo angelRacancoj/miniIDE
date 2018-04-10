@@ -1,10 +1,18 @@
 package miniide.frontEnd;
 
 import Archivo.ManejadorArchivo;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.event.CaretListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import miniide.treeManager.treeController;
 
 /**
@@ -17,13 +25,14 @@ public class principal extends javax.swing.JFrame {
     LexerArch myLexer;
     parser parser;
     treeController control;
+    String path;
 
     public principal() {
-        myManejador = new ManejadorArchivo();
         initComponents();
+        this.myManejador = new ManejadorArchivo();
         this.control = new treeController(this.fileTree);
         this.myLexer = new LexerArch(new StringReader(""));
-        this.parser = new parser(myLexer, fileTree, control);
+        this.parser = new parser(myLexer, control);
     }
 
     @SuppressWarnings("unchecked")
@@ -36,6 +45,7 @@ public class principal extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         optionsMenu = new javax.swing.JMenu();
         fileMenu = new javax.swing.JMenu();
+        openFileMenuItem = new javax.swing.JMenuItem();
         newFileMenuItem = new javax.swing.JMenuItem();
         editFileMenuItem = new javax.swing.JMenuItem();
         proyectMenu = new javax.swing.JMenu();
@@ -53,6 +63,14 @@ public class principal extends javax.swing.JFrame {
         optionsMenu.setText("Options");
 
         fileMenu.setText("File");
+
+        openFileMenuItem.setText("Open File");
+        openFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openFileMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(openFileMenuItem);
 
         newFileMenuItem.setText("New File");
         newFileMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -116,13 +134,20 @@ public class principal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void newFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newFileMenuItemActionPerformed
-        try {
-            filesOpenTabbedPane.add(new ventana());
-        } catch (Exception e) {
-            System.out.println(e);
+    private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuItemActionPerformed
+        JFileChooser dialogo = new JFileChooser();
+        dialogo.setDialogTitle("Open");
+        if (dialogo.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            path = dialogo.getSelectedFile().getAbsolutePath();
+            try {
+                ventana wind = new ventana(path);
+                wind.setText(myManejador.lecturaArchivo(path));
+                filesOpenTabbedPane.add(myManejador.nameFile(path), wind);
+            } catch (IOException e) {
+                System.out.println(e);
+            }
         }
-    }//GEN-LAST:event_newFileMenuItemActionPerformed
+    }//GEN-LAST:event_openFileMenuItemActionPerformed
 
     private void openProyectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProyectMenuItemActionPerformed
         try {
@@ -139,6 +164,24 @@ public class principal extends javax.swing.JFrame {
         System.out.println("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
     }//GEN-LAST:event_openProyectMenuItemActionPerformed
 
+    private void newFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newFileMenuItemActionPerformed
+        JFileChooser guardar = new JFileChooser();
+        guardar.setDialogTitle("Save a file");
+        if (guardar.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            path = guardar.getSelectedFile().getAbsolutePath();
+            System.out.println(path);
+            try {
+                myManejador.guardarArchivo(path, "$* Clase " + myManejador.nameFile(path) + " creada *$");
+                ventana wind = new ventana(path);
+                wind.setText(myManejador.lecturaArchivo(path));
+                filesOpenTabbedPane.add(myManejador.nameFile(path), wind);
+            } catch (IOException e) {
+                System.out.println(e);
+            }
+        }
+
+    }//GEN-LAST:event_newFileMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem closeActualProyectMenuItem;
     private javax.swing.JMenuItem editFileMenuItem;
@@ -150,6 +193,7 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuItem newFileMenuItem;
     private javax.swing.JMenuItem newProyectMenuItem;
+    private javax.swing.JMenuItem openFileMenuItem;
     private javax.swing.JMenuItem openProyectMenuItem;
     private javax.swing.JMenu optionsMenu;
     private javax.swing.JMenu proyectMenu;

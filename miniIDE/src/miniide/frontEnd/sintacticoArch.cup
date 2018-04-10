@@ -10,15 +10,13 @@ import miniide.exceptions.NotFolderException;
 parser code {:
 
 	private static final String SEPARATOR = "/";
-	 String path = "";
+	String path = "";
     String nameProyect = "";
     boolean isDirectory;
-	JTree tree;
 	treeController control;
 
-	public parser(LexerArch lex, JTree tree, treeController treeControl) {
+	public parser(LexerArch lex, treeController treeControl) {
 		super(lex);
-		this.tree = tree;
 		this.control = treeControl;
 	}
 
@@ -83,10 +81,11 @@ PAQUETE 		::= paqueteOp NAME_DIR ARCHIVOS_LS paqueteCl
 					| paqueteOp NAME_DIR LIST_PAQUETES ARCHIVOS_LS paqueteCl
 					| paqueteOp NAME_DIR LIST_PAQUETES paqueteCl
 					| paqueteOp NAME_DIR paqueteCl 								{: System.out.println("paquetes indicados correctamente"); :}
+					| error:e {: System.out.println("Error al construir el paquete"); :}
 					;	
 
 LIST_PAQUETES	::= PAQUETE LIST_PAQUETES
-					| PAQUETE
+					| PAQUETE 													
 					;
 
 ARCHIVOS_LS		::= lsArchOp LIST_FILES lsArchCl;

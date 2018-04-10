@@ -56,12 +56,12 @@ public class Structure {
 
     public void appendCorCerrado(String corCerrado, JTextPane panelComandos, boolean StructIf) {
         appendLineJump(panelComandos);
-        appendCBlack(corCerrado, panelComandos);
         tabs--;
         if (!StructIf) {
             appendLineJump(panelComandos);
         }
         addTabs(tabs, panelComandos);
+        appendCBlack(corCerrado, panelComandos);
     }
 
     public void appendCorAbierto(String corAbierto, JTextPane panelComandos) {
