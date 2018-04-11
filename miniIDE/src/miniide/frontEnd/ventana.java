@@ -96,7 +96,6 @@ public class ventana extends javax.swing.JPanel {
         salidaTextPane = new javax.swing.JTextPane();
         archivoButton = new javax.swing.JButton();
         proyectoButton = new javax.swing.JButton();
-        closeButton = new javax.swing.JButton();
         lineColLabel = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         entradaTextArea = new javax.swing.JTextArea();
@@ -112,13 +111,6 @@ public class ventana extends javax.swing.JPanel {
         });
 
         proyectoButton.setText(">>");
-
-        closeButton.setText("Cerrar ");
-        closeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeButtonActionPerformed(evt);
-            }
-        });
 
         lineColLabel.setText("0");
 
@@ -145,17 +137,14 @@ public class ventana extends javax.swing.JPanel {
                         .addGap(0, 202, Short.MAX_VALUE))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(archivoButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(proyectoButton, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(guardarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(guardarButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -175,7 +164,6 @@ public class ventana extends javax.swing.JPanel {
                             .addComponent(jScrollPane3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(closeButton)
                             .addComponent(lineColLabel)
                             .addComponent(guardarButton))))
                 .addContainerGap())
@@ -202,13 +190,8 @@ public class ventana extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_guardarButtonActionPerformed
 
-    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_closeButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton archivoButton;
-    private javax.swing.JButton closeButton;
     private javax.swing.JTextArea entradaTextArea;
     private javax.swing.JButton guardarButton;
     private javax.swing.JScrollPane jScrollPane1;
@@ -221,4 +204,24 @@ public class ventana extends javax.swing.JPanel {
     public void setText(String textIn) {
         entradaTextArea.setText(textIn);
     }
+
+    /**
+     * devuelve el texto del lado sin formato
+     *
+     * @return
+     */
+    public String getEntradaTextArea() {
+        return entradaTextArea.getText();
+    }
+
+    /**
+     * obtenemos el path de la ventana
+     *
+     *
+     * @return
+     */
+    public String getPathIn() {
+        return pathIn;
+    }
+
 }

@@ -1,18 +1,12 @@
 package miniide.frontEnd;
 
 import Archivo.ManejadorArchivo;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.event.CaretListener;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.JOptionPane;
 import miniide.treeManager.treeController;
 
 /**
@@ -26,6 +20,7 @@ public class principal extends javax.swing.JFrame {
     parser parser;
     treeController control;
     String path;
+    String pathRpm;
 
     public principal() {
         initComponents();
@@ -54,11 +49,13 @@ public class principal extends javax.swing.JFrame {
         newProyectMenuItem = new javax.swing.JMenuItem();
         openProyectMenuItem = new javax.swing.JMenuItem();
         closeActualProyectMenuItem = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        aCercaDe = new javax.swing.JMenu();
+        infoMenuItem = new javax.swing.JMenuItem();
 
         jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Mini IDE V 0.1");
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("/");
         fileTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
@@ -117,8 +114,22 @@ public class principal extends javax.swing.JFrame {
 
         jMenuBar1.add(optionsMenu);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        aCercaDe.setText("About");
+        aCercaDe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aCercaDeActionPerformed(evt);
+            }
+        });
+
+        infoMenuItem.setText("Information");
+        infoMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                infoMenuItemActionPerformed(evt);
+            }
+        });
+        aCercaDe.add(infoMenuItem);
+
+        jMenuBar1.add(aCercaDe);
 
         setJMenuBar(jMenuBar1);
 
@@ -148,7 +159,7 @@ public class principal extends javax.swing.JFrame {
 
     private void openFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileMenuItemActionPerformed
         JFileChooser dialogo = new JFileChooser();
-        dialogo.setDialogTitle("Open");
+        dialogo.setDialogTitle("Open .mcf file");
         if (dialogo.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             path = dialogo.getSelectedFile().getAbsolutePath();
             try {
@@ -162,23 +173,28 @@ public class principal extends javax.swing.JFrame {
     }//GEN-LAST:event_openFileMenuItemActionPerformed
 
     private void openProyectMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openProyectMenuItemActionPerformed
-        try {
-            myLexer.yyreset(new StringReader(myManejador.lecturaArchivo("/home/angel/Documents/ejemplo.mpr")));
-        } catch (IOException ex) {
-            Logger.getLogger(principal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            this.parser.parse();
-        } catch (Exception e) {
-            Logger.getLogger(ventana.class.getName()).log(Level.SEVERE, null, e);
-        }
+        JFileChooser dialogo = new JFileChooser();
+        dialogo.setDialogTitle("Open .mrp file");
+        if (dialogo.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            pathRpm = dialogo.getSelectedFile().getAbsolutePath();
+            try {
+                myLexer.yyreset(new StringReader(myManejador.lecturaArchivo(pathRpm)));
+            } catch (IOException ex) {
+                Logger.getLogger(principal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                this.parser.parse();
+            } catch (Exception e) {
+                Logger.getLogger(ventana.class.getName()).log(Level.SEVERE, null, e);
+            }
 
-        System.out.println("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+            System.out.println("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
+        }
     }//GEN-LAST:event_openProyectMenuItemActionPerformed
 
     private void newFileMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newFileMenuItemActionPerformed
         JFileChooser guardar = new JFileChooser();
-        guardar.setDialogTitle("Save a file");
+        guardar.setDialogTitle("Create as .mcf file");
         if (guardar.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             path = guardar.getSelectedFile().getAbsolutePath();
             System.out.println(path);
@@ -195,17 +211,39 @@ public class principal extends javax.swing.JFrame {
     }//GEN-LAST:event_newFileMenuItemActionPerformed
 
     private void CloseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseMenuItemActionPerformed
-        this.filesOpenTabbedPane.remove(this.filesOpenTabbedPane.getSelectedComponent());
+        ventana auxV = (ventana) this.filesOpenTabbedPane.getSelectedComponent();
+
+        try {
+            if (auxV.getEntradaTextArea().equalsIgnoreCase(myManejador.lecturaArchivo(auxV.getPathIn()))) {
+                this.filesOpenTabbedPane.remove(this.filesOpenTabbedPane.getSelectedComponent());
+            } else {
+                int respuesta = JOptionPane.showConfirmDialog(this, "Desea salir sin guardar?", "Salir", JOptionPane.YES_NO_OPTION);
+                if (respuesta == 0) {
+                    this.filesOpenTabbedPane.remove(this.filesOpenTabbedPane.getSelectedComponent());
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_CloseMenuItemActionPerformed
+
+    private void aCercaDeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aCercaDeActionPerformed
+
+    }//GEN-LAST:event_aCercaDeActionPerformed
+
+    private void infoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoMenuItemActionPerformed
+        JOptionPane.showMessageDialog(this, "Desarrollado por: \nAngel O. Racancoj G. \nID: 201631547  \n1st Semestrer 2018 \nVersion 0.1 (Beta)", "Acerca de", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_infoMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem CloseMenuItem;
+    private javax.swing.JMenu aCercaDe;
     private javax.swing.JMenuItem closeActualProyectMenuItem;
     private javax.swing.JMenuItem editFileMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JTree fileTree;
     private javax.swing.JTabbedPane filesOpenTabbedPane;
-    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuItem infoMenuItem;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane2;
