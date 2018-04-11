@@ -18,7 +18,9 @@ parser code {:
 	public void syntax_error(Symbol cur_token) {
 		String message = "Estructura invalida en posición " + cur_token.right
 			 + ", token: " + cur_token.value;
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<");	 
 		System.out.println(message);
+		System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	}
 
 :}
@@ -152,7 +154,7 @@ CLASE 			::= VISIBILIDAD CLASE_ID IDENTIFICADOR CLASE1;
 						;
 	CLASE2			::=	  COR_ABIERTO CUERPO_PRO COR_CERRADO 
 						| COR_ABIERTO COR_CERRADO 
-						| error:e {: System.out.println("Error durante la construccion de la clase") :}
+						| error:e {: System.out.println("Error durante la construccion de la clase"); :}
 						;
 
 CUERPO_PRO		::=	ATRI_CLASE CUERPO_PRO
@@ -182,11 +184,9 @@ DECLARACION		::=	NAME_PRIMITIVO DECLARACION1;
 						| IDENTIFICADOR END_COM_ID
 						;
 
-INICIALIZAR		::=	NAME_PRIMITIVO IDENTIFICADOR ASIGNACION_ID DATO_PRIMITIVO END_COM_ID
-					| error:e {: System.out.println("Error al inicializar"); :};
+INICIALIZAR		::=	NAME_PRIMITIVO IDENTIFICADOR ASIGNACION_ID DATO_PRIMITIVO END_COM_ID;
 
-INSTANCIAR		::=	IDENTIFICADOR IDENTIFICADOR ASIGNACION_ID NUEVO_ID IDENTIFICADOR PAR_ABIERTO_ID INSTANCIAR1
-					| error:e {: System.out.println("Error al instaciar"); :};
+INSTANCIAR		::=	IDENTIFICADOR IDENTIFICADOR ASIGNACION_ID NUEVO_ID IDENTIFICADOR PAR_ABIERTO_ID INSTANCIAR1;
 	INSTANCIAR1	::=	PAR_CERRADO_ID END_COM_ID
 					| PARAMETROS PAR_CERRADO_ID END_COM_ID 
 					;
@@ -195,7 +195,6 @@ METODO			::=	VISIBILIDAD NAME_PRIMITIVO IDENTIFICADOR PAR_ABIERTO_ID PARAMETROS 
 					| VISIBILIDAD NAME_PRIMITIVO IDENTIFICADOR PAR_ABIERTO_ID PAR_CERRADO_ID COR_ABIERTO METODO_E
 					| VISIBILIDAD VACIO_ID IDENTIFICADOR PAR_ABIERTO_ID PARAMETROS PAR_CERRADO_ID COR_ABIERTO METODO_D
 					| VISIBILIDAD VACIO_ID IDENTIFICADOR PAR_ABIERTO_ID PAR_CERRADO_ID COR_ABIERTO METODO_D
-					| error:e {: System.out.println("Error al construir el metodo"); :}
 					;
 
 METODO_E		::=	METODO_INICIO_C DATO_PRIMITIVO METODO_FIN;

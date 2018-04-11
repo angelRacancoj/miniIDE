@@ -58,7 +58,9 @@ non terminal String ARCHIVO_FILE, PAQUETE, LIST_PAQUETES, ARCHIVOS_LS, LIST_FILE
 
 start with PROYECTO;
 
-PROYECTO 		::= proyectoOp CUERPO_PROYECT proyectoCl 						{: System.out.println("Proyecto abierto exitosamente"); :};
+PROYECTO 		::= proyectoOp CUERPO_PROYECT proyectoCl 						{: System.out.println("Proyecto abierto exitosamente"); :}
+					| error:e {: System.out.println("Error durante la construccion de la clase"); :}
+					;
 
 CUERPO_PROYECT	::= NAME_DIR FECHA_CREATE ARCHIVOS_LS LIST_PAQUETES
 					| NAME_DIR FECHA_CREATE ARCHIVOS_LS

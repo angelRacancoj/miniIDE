@@ -43,7 +43,6 @@ public class principal extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         openFileMenuItem = new javax.swing.JMenuItem();
         newFileMenuItem = new javax.swing.JMenuItem();
-        editFileMenuItem = new javax.swing.JMenuItem();
         CloseMenuItem = new javax.swing.JMenuItem();
         proyectMenu = new javax.swing.JMenu();
         newProyectMenuItem = new javax.swing.JMenuItem();
@@ -55,7 +54,7 @@ public class principal extends javax.swing.JFrame {
         jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Mini IDE V 0.1");
+        setTitle("Mini IDE V 0.1 (Preview)");
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("/");
         fileTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
@@ -80,9 +79,6 @@ public class principal extends javax.swing.JFrame {
             }
         });
         fileMenu.add(newFileMenuItem);
-
-        editFileMenuItem.setText("Edit File");
-        fileMenu.add(editFileMenuItem);
 
         CloseMenuItem.setText("Close file");
         CloseMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -217,8 +213,12 @@ public class principal extends javax.swing.JFrame {
             if (auxV.getEntradaTextArea().equalsIgnoreCase(myManejador.lecturaArchivo(auxV.getPathIn()))) {
                 this.filesOpenTabbedPane.remove(this.filesOpenTabbedPane.getSelectedComponent());
             } else {
-                int respuesta = JOptionPane.showConfirmDialog(this, "Desea salir sin guardar?", "Salir", JOptionPane.YES_NO_OPTION);
+                int respuesta = JOptionPane.showConfirmDialog(this, "Close without save?", "Close", JOptionPane.YES_NO_OPTION);
                 if (respuesta == 0) {
+                    this.filesOpenTabbedPane.remove(this.filesOpenTabbedPane.getSelectedComponent());
+                } else {
+                    myManejador.guardarArchivo(auxV.getPathIn(), auxV.getEntradaTextArea());
+                    JOptionPane.showMessageDialog(this, "Successfully saved", "Information", JOptionPane.INFORMATION_MESSAGE);
                     this.filesOpenTabbedPane.remove(this.filesOpenTabbedPane.getSelectedComponent());
                 }
             }
@@ -239,7 +239,6 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem CloseMenuItem;
     private javax.swing.JMenu aCercaDe;
     private javax.swing.JMenuItem closeActualProyectMenuItem;
-    private javax.swing.JMenuItem editFileMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JTree fileTree;
     private javax.swing.JTabbedPane filesOpenTabbedPane;

@@ -2,6 +2,7 @@ package miniide;
 
 import java_cup.runtime.*;
 import javax.swing.JTextPane;
+import miniide.sym;
 
 %%
 
@@ -12,7 +13,7 @@ import javax.swing.JTextPane;
 %line
 %column
 
-LineTerminator = \r|\n|\r\n
+LineTerminator = \r|\n|\r\n|null
 InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
@@ -105,7 +106,7 @@ boolID = "true" | "false"
 	"HASTA" 			{imprimirToken(yytext()); return symbol(Hasta_SC, yytext());}
 	"INCREMENTO" 		{imprimirToken(yytext()); return symbol(Incremento_SC, yytext());}
 	"imprimir" 			{imprimirToken(yytext()); return symbol(Imprimir, yytext());}
-	{Comment} 			{imprimirToken(yytext()); painting.appendCGreen(yytext(),panel);}
+	{Comment} 			{imprimirToken(yytext()); return symbol(Comment, yytext()); painting.appendCGreen(yytext(),panel);}
 	{boolID}		 	{imprimirToken(yytext()); return symbol(Boolean, yytext());}
 	{entero} 			{imprimirToken(yytext()); return symbol(Entero, yytext());}
 	{decimal} 			{imprimirToken(yytext()); return symbol(Decimal, yytext());}
