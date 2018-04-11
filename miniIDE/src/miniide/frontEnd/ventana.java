@@ -50,6 +50,7 @@ public class ventana extends javax.swing.JPanel {
         TextLineNumber lineNumber2 = new TextLineNumber(entradaTextArea);
         jScrollPane1.setRowHeaderView(lineNumber);
         jScrollPane3.setRowHeaderView(lineNumber2);
+        fileManager = new ManejadorArchivo();
 
         entradaTextArea.addCaretListener(new CaretListener() {
 
@@ -95,10 +96,11 @@ public class ventana extends javax.swing.JPanel {
         salidaTextPane = new javax.swing.JTextPane();
         archivoButton = new javax.swing.JButton();
         proyectoButton = new javax.swing.JButton();
-        salirButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
         lineColLabel = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         entradaTextArea = new javax.swing.JTextArea();
+        guardarButton = new javax.swing.JButton();
 
         jScrollPane1.setViewportView(salidaTextPane);
 
@@ -111,13 +113,25 @@ public class ventana extends javax.swing.JPanel {
 
         proyectoButton.setText(">>");
 
-        salirButton.setText("Cerrar ");
+        closeButton.setText("Cerrar ");
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeButtonActionPerformed(evt);
+            }
+        });
 
         lineColLabel.setText("0");
 
         entradaTextArea.setColumns(20);
         entradaTextArea.setRows(5);
         jScrollPane3.setViewportView(entradaTextArea);
+
+        guardarButton.setText("Save");
+        guardarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                guardarButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -129,7 +143,7 @@ public class ventana extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lineColLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 202, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
@@ -138,7 +152,10 @@ public class ventana extends javax.swing.JPanel {
                             .addComponent(proyectoButton, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(salirButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(guardarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -158,8 +175,9 @@ public class ventana extends javax.swing.JPanel {
                             .addComponent(jScrollPane3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(salirButton)
-                            .addComponent(lineColLabel))))
+                            .addComponent(closeButton)
+                            .addComponent(lineColLabel)
+                            .addComponent(guardarButton))))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -176,15 +194,28 @@ public class ventana extends javax.swing.JPanel {
         System.out.println("\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n");
     }//GEN-LAST:event_archivoButtonActionPerformed
 
+    private void guardarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarButtonActionPerformed
+        try {
+            fileManager.guardarArchivo(pathIn, entradaTextArea.getText());
+        } catch (IOException ex) {
+            Logger.getLogger(ventana.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_guardarButtonActionPerformed
+
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_closeButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton archivoButton;
+    private javax.swing.JButton closeButton;
     private javax.swing.JTextArea entradaTextArea;
+    private javax.swing.JButton guardarButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lineColLabel;
     private javax.swing.JButton proyectoButton;
     private javax.swing.JTextPane salidaTextPane;
-    private javax.swing.JButton salirButton;
     // End of variables declaration//GEN-END:variables
 
     public void setText(String textIn) {

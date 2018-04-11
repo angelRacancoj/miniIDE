@@ -39,6 +39,7 @@ public class principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jMenuItem1 = new javax.swing.JMenuItem();
         filesOpenTabbedPane = new javax.swing.JTabbedPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         fileTree = new javax.swing.JTree();
@@ -48,11 +49,14 @@ public class principal extends javax.swing.JFrame {
         openFileMenuItem = new javax.swing.JMenuItem();
         newFileMenuItem = new javax.swing.JMenuItem();
         editFileMenuItem = new javax.swing.JMenuItem();
+        CloseMenuItem = new javax.swing.JMenuItem();
         proyectMenu = new javax.swing.JMenu();
         newProyectMenuItem = new javax.swing.JMenuItem();
         openProyectMenuItem = new javax.swing.JMenuItem();
         closeActualProyectMenuItem = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+
+        jMenuItem1.setText("jMenuItem1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,6 +86,14 @@ public class principal extends javax.swing.JFrame {
 
         editFileMenuItem.setText("Edit File");
         fileMenu.add(editFileMenuItem);
+
+        CloseMenuItem.setText("Close file");
+        CloseMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CloseMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(CloseMenuItem);
 
         optionsMenu.add(fileMenu);
 
@@ -182,7 +194,12 @@ public class principal extends javax.swing.JFrame {
 
     }//GEN-LAST:event_newFileMenuItemActionPerformed
 
+    private void CloseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseMenuItemActionPerformed
+        this.filesOpenTabbedPane.remove(this.filesOpenTabbedPane.getSelectedComponent());
+    }//GEN-LAST:event_CloseMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem CloseMenuItem;
     private javax.swing.JMenuItem closeActualProyectMenuItem;
     private javax.swing.JMenuItem editFileMenuItem;
     private javax.swing.JMenu fileMenu;
@@ -190,6 +207,7 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JTabbedPane filesOpenTabbedPane;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuItem newFileMenuItem;
     private javax.swing.JMenuItem newProyectMenuItem;
